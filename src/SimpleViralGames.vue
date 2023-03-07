@@ -90,7 +90,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import axios from 'axios'
 import { ref } from 'vue';
 const name = ref('hi'), url = ref('hi'), author = ref('hi'), publishedDate = ref('hi');
