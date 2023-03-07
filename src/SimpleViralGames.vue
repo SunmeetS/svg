@@ -1,4 +1,6 @@
 <template>
+
+  <Svgmobile class="mobile"/>
   <div class="mainPage">
     <h1>Game CRUD</h1>
 
@@ -93,13 +95,13 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue';
+import Svgmobile from './svgmobile.vue';
 const name = ref('hi'), url = ref('hi'), author = ref('hi'), publishedDate = ref('hi');
 let games = ref([])
 let game = ref({ id: "", name: "", url: "", author: "", publishedDate: "" })
 let updatedGame = ref({ id: "", name: "", url: "", author: "", publishedDate: "" })
 const deleteId = ref('')
 const baseUrl = import.meta.env.VITE_MAIN_URL
-
 const loading = ref(false)
 
 const flex = 'display: flex; flex-direction: column; '
@@ -335,4 +337,21 @@ const deleteAll = async () => {
    font-size: 0.8rem;
    margin-top: 5px;
  }
+
+ .mobile {
+  display: none;
+ }
+
+@media only screen 
+and (max-width : 500px) {
+  /* Styles */
+
+  .mainPage {
+    display: none ;
+  }
+
+  .mobile {
+    display: block;
+  }
+}
 </style>
