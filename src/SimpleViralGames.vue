@@ -2,7 +2,7 @@
   <div class="mainPage">
     <h1>Game CRUD</h1>
 
-    <div :style="flex" class="main">
+    <div v-if="!loading" :style="flex" class="main">
       <!-- Create Single Game -->
       <div id="create-game-form" class="flex">
         <label for="name">Name:</label>
@@ -86,6 +86,7 @@
         <button @click="deleteAll()" style="background: red">Delete All Games</button>
       </div>
     </div>
+    <h1 v-if="loading">Loading...</h1>
   </div>
 </template>
 
@@ -99,16 +100,20 @@ let updatedGame = ref({ id: "", name: "", url: "", author: "", publishedDate: ""
 const deleteId = ref('')
 const baseUrl = import.meta.env.VITE_MAIN_URL
 
+const loading = ref(false)
+
 const flex = 'display: flex; flex-direction: column; '
 
 const createGame = async () => {
   try {
-    const response = await axios.post(baseUrl+'games/create', {
+    loading.value = true
+    const response = await axios.post(baseUrl + 'games/create', {
       name: name.value,
       url: url.value,
       author: author.value,
       publishedDate: publishedDate.value
     });
+    loading.value = false
     console.log(response.data);
     alert('Game created successfully!');
   } catch (error) {
@@ -119,6 +124,7 @@ const createGame = async () => {
 
 const getAllGames = async () => {
   try {
+    loading.value = true
     const response = await axios.get(baseUrl + 'games/find/all');
     response.data.forEach(({
       url, name, author, publishedDate, _id
@@ -129,6 +135,8 @@ const getAllGames = async () => {
         }
       )
     })
+    loading.value = false
+
   } catch (error) {
     console.error(error);
     alert('Error getting all games!');
@@ -137,9 +145,12 @@ const getAllGames = async () => {
 
 const readGame = async (id) => {
   try {
+    loading.value = true
     const response = await axios.get(baseUrl + 'games/' + id);
     const { name, url, publishedDate, author } = response.data
     game.value.name = name; game.value.url = url; game.value.publishedDate = publishedDate; game.value.author = author
+    loading.value = false
+
   } catch (error) {
     console.error(error);
     alert('Error getting game!');
@@ -148,13 +159,16 @@ const readGame = async (id) => {
 
 const updateGame = async (id) => {
   try {
+    loading.value = true
     const { name, url, author, publishedDate } = updatedGame.value
-    const response = await axios.put(baseUrl+'games/' + id, {
+    const response = await axios.put(baseUrl + 'games/' + id, {
       name: name,
       url: url,
       author: author,
       publishedDate: publishedDate
     });
+    loading.value = false
+
     alert('Game updated successfully!');
   } catch (error) {
     console.error(error);
@@ -164,7 +178,10 @@ const updateGame = async (id) => {
 
 const deleteGame = async (id) => {
   try {
-    const response = await axios.delete(baseUrl+'games/' + id);
+    loading.value = true
+    const response = await axios.delete(baseUrl + 'games/' + id);
+    loading.value = false
+
     alert('Game deleted successfully!');
   } catch (error) {
     alert('Error deleting game!');
@@ -173,7 +190,10 @@ const deleteGame = async (id) => {
 
 const deleteAll = async () => {
   try {
-    const response = await axios.delete(baseUrl+'games/deleteAll');
+    loading.value = true
+    const response = await axios.delete(baseUrl + 'games/deleteAll');
+    loading.value = false
+
     alert('Games deleted successfully!');
   } catch (error) {
     alert('Error deleting game!');
@@ -238,26 +258,27 @@ const deleteAll = async () => {
    background-color: #3e8e41;
  }
 
- .eachGame, .all-game-details{
-  height: 100%;
-  width: 80%;
-  display: flex;
-  align-items: start;
-  flex-wrap: wrap;
-  padding: 0.2rem
-}
+ .eachGame,
+ .all-game-details {
+   height: 100%;
+   width: 80%;
+   display: flex;
+   align-items: start;
+   flex-wrap: wrap;
+   padding-left: 0.2rem;
+ }
 
-.eachGame{
-  border: 0.05rem solid black;
-  border-radius: 0.5rem;
-}
+ .eachGame {
+   border: 0.05rem solid black;
+   border-radius: 0.5rem;
+ }
 
  /* game details container */
  .game-container {
    display: flex;
    align-items: center;
    width: fit-content;
-   margin: 0.3rem
+   margin: 0.6rem
  }
 
  /* game details */
